@@ -1,8 +1,9 @@
 // script.js
 
-const API_KEY = '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'; // Replace with placeholder (e.g., 'sk-placeholder')—do NOT commit real key
+// Prompt user for API key on page load
+const API_KEY = prompt('Please enter your OpenRouter API key:') || 'sk-placeholder'; // Fallback if user cancels
 const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const MODEL = 'deepseek/deepseek-chat-v3.1:free';
+const MODEL = 'openai/gpt-oss-120b:free'; // Updated to the new free model
 
 let conversationHistory = [
     {
@@ -29,14 +30,19 @@ async function sendMessage() {
 
     conversationHistory.push({ role: 'user', content: answer });
 
+    if (API_KEY === 'sk-placeholder') {
+        addMessage('Error: Please enter a valid OpenRouter API key.');
+        return;
+    }
+
     try {
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${API_KEY}`,
                 'Content-Type': 'application/json',
-                'HTTP-Referer': 'https://cosmiccrusader23.github.io', // Optional: Your site URL
-                'X-Title': 'Akinator Game' // Optional: App name
+                'HTTP-Referer': 'https://cosmiccrusader23.github.io',
+                'X-Title': 'Akinator Game'
             },
             body: JSON.stringify({
                 model: MODEL,
@@ -68,6 +74,11 @@ function resetGame() {
 }
 
 async function sendInitialQuestion() {
+    if (API_KEY === 'sk-placeholder') {
+        addMessage('Error: Please enter a valid OpenRouter API key.');
+        return;
+    }
+
     try {
         const response = await fetch(API_URL, {
             method: 'POST',
