@@ -3,189 +3,392 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosmic's Playground</title>
+    <title>Space Akinator with DeepSeek</title>
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
         body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  background: linear-gradient(to bottom, #0b0b2a, #1a1a40, #0b0b2a);
-  position: relative;
-  overflow-x: hidden;
-}
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #0b0b2a, #1a1a40, #0b0b2a);
+            color: #fff;
+            position: relative;
+            overflow-x: hidden;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-/* Stars */
-body::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 130px 80px, #ddd, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 160px 30px, #eee, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 200px 60px, #fff, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 230px 30px, #eee, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 270px 70px, #fff, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 300px 20px, #ddd, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 330px 60px, #fff, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 360px 40px, #eee, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 390px 90px, #fff, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 420px 50px, #ddd, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 450px 80px, #fff, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 480px 30px, #eee, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 510px 60px, #fff, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 540px 70px, #ddd, rgba(0,0,0,0));
-  background-repeat: repeat;
-  background-size: 550px 550px;
-  opacity: 0.6;
-  z-index: -1;
-  animation: twinkle 8s ease-in-out infinite alternate;
-}
+        /* Stars */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 130px 80px, #ddd, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 160px 30px, #eee, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 200px 60px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 230px 30px, #eee, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 270px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 300px 20px, #ddd, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 330px 60px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 360px 40px, #eee, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 390px 90px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 420px 50px, #ddd, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 450px 80px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 480px 30px, #eee, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 510px 60px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 540px 70px, #ddd, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 550px 550px;
+            opacity: 0.6;
+            z-index: -1;
+            animation: twinkle 8s ease-in-out infinite alternate;
+        }
 
-/* Additional stars layer */
-body::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    radial-gradient(1px 1px at 50px 160px, #fff, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 90px 120px, #ddd, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 140px 200px, #eee, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 190px 160px, #fff, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 230px 180px, #ddd, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 280px 120px, #eee, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 330px 140px, #fff, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 380px 200px, #ddd, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 430px 180px, #eee, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 480px 160px, #fff, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 520px 140px, #ddd, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 50px 300px, #eee, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 100px 280px, #fff, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 150px 320px, #ddd, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 200px 340px, #eee, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 250px 360px, #fff, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 300px 380px, #ddd, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 350px 320px, #eee, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 400px 340px, #fff, rgba(0,0,0,0)),
-    radial-gradient(1px 1px at 450px 360px, #ddd, rgba(0,0,0,0)),
-    radial-gradient(2px 2px at 500px 380px, #eee, rgba(0,0,0,0));
-  background-repeat: repeat;
-  background-size: 550px 550px;
-  opacity: 0.4;
-  z-index: -1;
-  animation: twinkle 12s ease-in-out infinite alternate-reverse;
-}
+        /* Additional stars layer */
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(1px 1px at 50px 160px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 90px 120px, #ddd, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 140px 200px, #eee, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 190px 160px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 230px 180px, #ddd, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 280px 120px, #eee, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 330px 140px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 380px 200px, #ddd, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 430px 180px, #eee, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 480px 160px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 520px 140px, #ddd, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 50px 300px, #eee, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 100px 280px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 150px 320px, #ddd, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 200px 340px, #eee, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 250px 360px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 300px 380px, #ddd, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 350px 320px, #eee, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 400px 340px, #fff, rgba(0,0,0,0)),
+                radial-gradient(1px 1px at 450px 360px, #ddd, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 500px 380px, #eee, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 550px 550px;
+            opacity: 0.4;
+            z-index: -1;
+            animation: twinkle 12s ease-in-out infinite alternate-reverse;
+        }
 
-/* Shooting stars */
-@keyframes shoot {
-  0% {
-    transform: translateX(-100px) translateY(-100px) rotate(45deg);
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  20% {
-    transform: translateX(300px) translateY(300px) rotate(45deg);
-    opacity: 0;
-  }
-  100% {
-    opacity: 0;
-  }
-}
+        /* Twinkling animation */
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+        
+        .container {
+            background-color: rgba(10, 10, 35, 0.85);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+            border: 1px solid rgba(100, 100, 255, 0.3);
+            backdrop-filter: blur(5px);
+        }
+        
+        header {
+            background: linear-gradient(to right, #4a00e0, #8e2de2);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(100, 150, 255, 0.7);
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .api-key-section {
+            padding: 20px;
+            background-color: rgba(15, 15, 45, 0.7);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .api-key-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid rgba(100, 100, 255, 0.4);
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            background-color: rgba(10, 10, 30, 0.7);
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .api-key-input:focus {
+            outline: none;
+            border-color: #8e2de2;
+            box-shadow: 0 0 10px rgba(142, 45, 226, 0.5);
+        }
+        
+        .api-key-note {
+            font-size: 0.9rem;
+            color: #aaa;
+            text-align: center;
+        }
+        
+        .api-key-note a {
+            color: #8e2de2;
+            text-decoration: none;
+        }
+        
+        .api-key-note a:hover {
+            text-decoration: underline;
+        }
+        
+        .game-container {
+            padding: 20px;
+        }
+        
+        .messages-container {
+            height: 300px;
+            overflow-y: auto;
+            padding: 15px;
+            border: 1px solid rgba(100, 100, 255, 0.3);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background-color: rgba(15, 15, 40, 0.5);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(100, 100, 255, 0.5) rgba(0, 0, 0, 0.2);
+        }
+        
+        .messages-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .messages-container::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 3px;
+        }
+        
+        .messages-container::-webkit-scrollbar-thumb {
+            background: rgba(100, 100, 255, 0.5);
+            border-radius: 3px;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            border-radius: 18px;
+            max-width: 80%;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .user-message {
+            background: linear-gradient(to right, #4776E6, #8E54E9);
+            color: white;
+            margin-left: auto;
+            margin-right: 0;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .ai-message {
+            background: linear-gradient(to right, #4a00e0, #8e2de2);
+            color: white;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .error-message {
+            background-color: rgba(198, 40, 40, 0.2);
+            color: #ff6b6b;
+            border: 1px solid rgba(198, 40, 40, 0.5);
+        }
+        
+        .input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        #user-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid rgba(100, 100, 255, 0.4);
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+            background-color: rgba(15, 15, 40, 0.7);
+            color: white;
+        }
+        
+        #user-input:focus {
+            border-color: #8e2de2;
+            box-shadow: 0 0 10px rgba(142, 45, 226, 0.5);
+        }
+        
+        #user-input::placeholder {
+            color: #aaa;
+        }
+        
+        button {
+            padding: 12px 20px;
+            background: linear-gradient(to right, #4a00e0, #8e2de2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        #reset-btn {
+            background: linear-gradient(to right, #4776E6, #8E54E9);
+        }
+        
+        .instructions {
+            background-color: rgba(25, 45, 25, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(100, 255, 100, 0.2);
+        }
+        
+        .instructions h3 {
+            color: #7bff7b;
+            margin-bottom: 10px;
+            text-shadow: 0 0 5px rgba(123, 255, 123, 0.5);
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+            color: #ccc;
+        }
+        
+        .instructions li {
+            margin-bottom: 5px;
+        }
+        
+        .instructions strong {
+            color: #7bff7b;
+        }
+        
+        .status {
+            text-align: center;
+            padding: 10px;
+            font-style: italic;
+            color: #aaa;
+        }
+        
+        @media (max-width: 600px) {
+            .input-area {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+            
+            body {
+                padding: 10px;
+            }
+        }
 
-.shooting-star {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 150px;
-  height: 2px;
-  background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1));
-  transform: rotate(45deg);
-  opacity: 0;
-  z-index: -1;
-}
+        /* Shooting stars */
+        .shooting-star {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 150px;
+            height: 2px;
+            background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1));
+            transform: rotate(45deg);
+            opacity: 0;
+            z-index: -1;
+            animation: shoot 5s linear infinite;
+        }
 
-/* Twinkling animation */
-@keyframes twinkle {
-  0%, 100% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-/* Add some shooting stars */
-body::before {
-  counter-reset: shooting-stars;
-}
-
-body::before {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  animation: shooting-stars 30s linear infinite;
-}
-
-@keyframes shooting-stars {
-  0% {
-    transform: rotate(45deg) translateX(-100%) translateY(-100%);
-  }
-  100% {
-    transform: rotate(45deg) translateX(100%) translateY(100%);
-  }
-}
-
-/* Container styling for your content */
-.container {
-  background-color: rgba(10, 10, 35, 0.8);
-  border: 1px solid rgba(100, 100, 255, 0.3);
-  border-radius: 15px;
-  box-shadow: 0 0 20px rgba(100, 100, 255, 0.2),
-              inset 0 0 20px rgba(100, 100, 255, 0.1);
-  backdrop-filter: blur(5px);
-}
-
-/* Add some glowing elements */
-.glow {
-  text-shadow: 0 0 10px rgba(100, 150, 255, 0.7);
-}
-
-/* Add a subtle pulsating effect to important elements */
-.pulse {
-  animation: pulse 3s infinite alternate;
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 10px rgba(100, 150, 255, 0.5);
-  }
-  100% {
-    box-shadow: 0 0 20px rgba(100, 150, 255, 0.8);
-  }
-}
+        @keyframes shoot {
+            0% {
+                transform: translateX(-100px) translateY(-100px) rotate(45deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            20% {
+                transform: translateX(300px) translateY(300px) rotate(45deg);
+                opacity: 0;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Shooting stars will be added by JavaScript -->
     <div class="container">
         <header>
-            <h1>Akinator Game</h1>
+            <h1>Space Akinator</h1>
             <p class="subtitle">Think of a character, and I'll guess it!</p>
         </header>
         
         <div class="api-key-section">
             <input type="password" class="api-key-input" id="api-key" placeholder="Enter your OpenRouter API key">
-            <p class="api-key-note">Get your API key from <a href="https://openrouter.ai/" target="_blank" style="color: #7b4397;">OpenRouter</a>. Your key is stored only in your browser.</p>
+            <p class="api-key-note">Get your API key from <a href="https://openrouter.ai/" target="_blank">OpenRouter</a>. Your key is stored only in your browser.</p>
         </div>
         
         <div class="game-container">
@@ -209,6 +412,21 @@ body::before {
     </div>
 
     <script>
+        // Add shooting stars
+        function createShootingStars() {
+            const body = document.querySelector('body');
+            for (let i = 0; i < 5; i++) {
+                const star = document.createElement('div');
+                star.classList.add('shooting-star');
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                body.appendChild(star);
+            }
+        }
+        
+        createShootingStars();
+
         const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
         const MODEL = 'deepseek/deepseek-chat-v3.1:free';
         
@@ -385,7 +603,7 @@ body::before {
         });
         
         // Initialize the game
-        addMessage('Welcome to Akinator! Enter your API key and think of a character to begin.');
+        addMessage('Welcome to Space Akinator! Enter your API key and think of a character to begin.');
         
         // Check if there's a saved API key
         const savedApiKey = localStorage.getItem('openrouter_api_key');
@@ -406,4 +624,3 @@ body::before {
     </script>
 </body>
 </html>
-
