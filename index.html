@@ -3,196 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akinator Game with DeepSeek</title>
+    <title>Cosmic's Playground</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
         body {
-            background: linear-gradient(135deg, #6e48aa, #9d50bb);
-            color: #333;
-            min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .container {
-            background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 800px;
-            overflow: hidden;
-        }
-        
-        header {
-            background: linear-gradient(to right, #7b4397, #dc2430);
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        
-        h1 {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
-        }
-        
-        .subtitle {
-            font-size: 1rem;
-            opacity: 0.9;
-        }
-        
-        .api-key-section {
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .api-key-input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-        
-        .api-key-note {
-            font-size: 0.9rem;
-            color: #666;
-            text-align: center;
-        }
-        
-        .game-container {
-            padding: 20px;
-        }
-        
-        .messages-container {
-            height: 300px;
-            overflow-y: auto;
-            padding: 15px;
-            border: 1px solid #eee;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            background-color: #fafafa;
-        }
-        
-        .message {
-            margin-bottom: 15px;
-            padding: 12px 15px;
-            border-radius: 18px;
-            max-width: 80%;
-            line-height: 1.5;
-        }
-        
-        .user-message {
-            background-color: #e3f2fd;
-            margin-left: auto;
-            margin-right: 0;
-            border-bottom-right-radius: 5px;
-        }
-        
-        .ai-message {
-            background-color: #f1f1f1;
-            border-bottom-left-radius: 5px;
-        }
-        
-        .error-message {
-            background-color: #ffebee;
-            color: #c62828;
-        }
-        
-        .input-area {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        
-        #user-input {
-            flex: 1;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 25px;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        
-        #user-input:focus {
-            border-color: #7b4397;
-        }
-        
-        button {
-            padding: 12px 20px;
-            background: linear-gradient(to right, #7b4397, #dc2430);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: transform 0.2s, opacity 0.2s;
-        }
-        
-        button:hover {
-            opacity: 0.9;
-            transform: translateY(-2px);
-        }
-        
-        button:active {
-            transform: translateY(0);
-        }
-        
-        #reset-btn {
-            background: linear-gradient(to right, #4776E6, #8E54E9);
-        }
-        
-        .instructions {
-            background-color: #e8f5e9;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
-            font-size: 0.9rem;
-        }
-        
-        .instructions h3 {
-            color: #2e7d32;
-            margin-bottom: 10px;
-        }
-        
-        .instructions ul {
-            padding-left: 20px;
-        }
-        
-        .instructions li {
-            margin-bottom: 5px;
-        }
-        
-        .status {
-            text-align: center;
-            padding: 10px;
-            font-style: italic;
-            color: #666;
-        }
-        
-        @media (max-width: 600px) {
-            .input-area {
-                flex-direction: column;
-            }
-            
-            button {
-                width: 100%;
-            }
-            
-            .message {
-                max-width: 90%;
-            }
-        }
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #0b0b2a, #1a1a40, #0b0b2a);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Stars */
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 130px 80px, #ddd, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 160px 30px, #eee, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 200px 60px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 230px 30px, #eee, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 270px 70px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 300px 20px, #ddd, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 330px 60px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 360px 40px, #eee, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 390px 90px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 420px 50px, #ddd, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 450px 80px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 480px 30px, #eee, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 510px 60px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 540px 70px, #ddd, rgba(0,0,0,0));
+  background-repeat: repeat;
+  background-size: 550px 550px;
+  opacity: 0.6;
+  z-index: -1;
+  animation: twinkle 8s ease-in-out infinite alternate;
+}
+
+/* Additional stars layer */
+body::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(1px 1px at 50px 160px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 90px 120px, #ddd, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 140px 200px, #eee, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 190px 160px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 230px 180px, #ddd, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 280px 120px, #eee, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 330px 140px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 380px 200px, #ddd, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 430px 180px, #eee, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 480px 160px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 520px 140px, #ddd, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 50px 300px, #eee, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 100px 280px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 150px 320px, #ddd, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 200px 340px, #eee, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 250px 360px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 300px 380px, #ddd, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 350px 320px, #eee, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 400px 340px, #fff, rgba(0,0,0,0)),
+    radial-gradient(1px 1px at 450px 360px, #ddd, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 500px 380px, #eee, rgba(0,0,0,0));
+  background-repeat: repeat;
+  background-size: 550px 550px;
+  opacity: 0.4;
+  z-index: -1;
+  animation: twinkle 12s ease-in-out infinite alternate-reverse;
+}
+
+/* Shooting stars */
+@keyframes shoot {
+  0% {
+    transform: translateX(-100px) translateY(-100px) rotate(45deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  20% {
+    transform: translateX(300px) translateY(300px) rotate(45deg);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.shooting-star {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 150px;
+  height: 2px;
+  background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,1));
+  transform: rotate(45deg);
+  opacity: 0;
+  z-index: -1;
+}
+
+/* Twinkling animation */
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Add some shooting stars */
+body::before {
+  counter-reset: shooting-stars;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  animation: shooting-stars 30s linear infinite;
+}
+
+@keyframes shooting-stars {
+  0% {
+    transform: rotate(45deg) translateX(-100%) translateY(-100%);
+  }
+  100% {
+    transform: rotate(45deg) translateX(100%) translateY(100%);
+  }
+}
+
+/* Container styling for your content */
+.container {
+  background-color: rgba(10, 10, 35, 0.8);
+  border: 1px solid rgba(100, 100, 255, 0.3);
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(100, 100, 255, 0.2),
+              inset 0 0 20px rgba(100, 100, 255, 0.1);
+  backdrop-filter: blur(5px);
+}
+
+/* Add some glowing elements */
+.glow {
+  text-shadow: 0 0 10px rgba(100, 150, 255, 0.7);
+}
+
+/* Add a subtle pulsating effect to important elements */
+.pulse {
+  animation: pulse 3s infinite alternate;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 10px rgba(100, 150, 255, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(100, 150, 255, 0.8);
+  }
+}
     </style>
 </head>
 <body>
@@ -425,3 +406,4 @@
     </script>
 </body>
 </html>
+
