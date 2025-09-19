@@ -3,134 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akinator Game</title>
+    <title>Akinator Game with DeepSeek</title>
     <style>
-        body {
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-            color: #333;
         }
+        
+        body {
+            background: linear-gradient(135deg, #6e48aa, #9d50bb);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
         .container {
             background-color: white;
-            border-radius: 10px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, #7b4397, #dc2430);
+            color: white;
             padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            color: #4a4a4a;
             text-align: center;
-            margin-bottom: 20px;
         }
-        #messages {
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .api-key-section {
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .api-key-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .api-key-note {
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+        }
+        
+        .game-container {
+            padding: 20px;
+        }
+        
+        .messages-container {
             height: 300px;
             overflow-y: auto;
-            border: 1px solid #ddd;
             padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 5px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            margin-bottom: 20px;
             background-color: #fafafa;
         }
+        
         .message {
-            margin-bottom: 10px;
-            padding: 8px 12px;
-            border-radius: 15px;
+            margin-bottom: 15px;
+            padding: 12px 15px;
+            border-radius: 18px;
             max-width: 80%;
+            line-height: 1.5;
         }
+        
         .user-message {
             background-color: #e3f2fd;
             margin-left: auto;
             margin-right: 0;
-            text-align: right;
+            border-bottom-right-radius: 5px;
         }
+        
         .ai-message {
             background-color: #f1f1f1;
+            border-bottom-left-radius: 5px;
         }
+        
         .error-message {
             background-color: #ffebee;
             color: #c62828;
         }
+        
         .input-area {
             display: flex;
             gap: 10px;
             margin-bottom: 15px;
         }
+        
         #user-input {
             flex: 1;
-            padding: 10px;
+            padding: 12px 15px;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
         }
+        
+        #user-input:focus {
+            border-color: #7b4397;
+        }
+        
         button {
-            padding: 10px 15px;
-            background-color: #4CAF50;
+            padding: 12px 20px;
+            background: linear-gradient(to right, #7b4397, #dc2430);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 25px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            font-weight: bold;
+            transition: transform 0.2s, opacity 0.2s;
         }
+        
         button:hover {
-            background-color: #45a049;
+            opacity: 0.9;
+            transform: translateY(-2px);
         }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
         #reset-btn {
-            background-color: #f44336;
+            background: linear-gradient(to right, #4776E6, #8E54E9);
         }
-        #reset-btn:hover {
-            background-color: #d32f2f;
-        }
-        .api-key-container {
-            margin-bottom: 15px;
-            padding: 15px;
-            background-color: #fff8e1;
-            border-radius: 5px;
-            border-left: 4px solid #ffc107;
-        }
-        #api-key {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
+        
         .instructions {
-            margin-top: 20px;
-            padding: 15px;
             background-color: #e8f5e9;
-            border-radius: 5px;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
             font-size: 0.9rem;
+        }
+        
+        .instructions h3 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin-bottom: 5px;
+        }
+        
+        .status {
+            text-align: center;
+            padding: 10px;
+            font-style: italic;
+            color: #666;
+        }
+        
+        @media (max-width: 600px) {
+            .input-area {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Akinator Game</h1>
+        <header>
+            <h1>Akinator Game</h1>
+            <p class="subtitle">Think of a character, and I'll guess it!</p>
+        </header>
         
-        <div class="api-key-container">
-            <label for="api-key">OpenRouter API Key:</label>
-            <input type="password" id="api-key" placeholder="Enter your OpenRouter API key">
-            <p><small>Get your API key from <a href="https://openrouter.ai/" target="_blank">OpenRouter</a>. Your key is stored only in your browser.</small></p>
+        <div class="api-key-section">
+            <input type="password" class="api-key-input" id="api-key" placeholder="Enter your OpenRouter API key">
+            <p class="api-key-note">Get your API key from <a href="https://openrouter.ai/" target="_blank" style="color: #7b4397;">OpenRouter</a>. Your key is stored only in your browser.</p>
         </div>
         
-        <div id="messages"></div>
-        
-        <div class="input-area">
-            <input type="text" id="user-input" placeholder="Type your answer (yes/no/maybe/maybe not/don't know)...">
-            <button id="send-btn">Send</button>
-            <button id="reset-btn">Reset Game</button>
-        </div>
-        
-        <div class="instructions">
-            <p><strong>How to play:</strong> Think of a character, person, or object. I'll try to guess it by asking yes/no questions.</p>
-            <p><strong>Possible answers:</strong> yes, no, maybe, maybe not, don't know</p>
+        <div class="game-container">
+            <div class="messages-container" id="messages"></div>
+            
+            <div class="input-area">
+                <input type="text" id="user-input" placeholder="Type your answer (yes/no/maybe/maybe not/don't know)...">
+                <button id="send-btn">Send</button>
+                <button id="reset-btn">New Game</button>
+            </div>
+            
+            <div class="instructions">
+                <h3>How to Play:</h3>
+                <ul>
+                    <li>Think of a real or fictional character</li>
+                    <li>Answer questions with: <strong>yes</strong>, <strong>no</strong>, <strong>maybe</strong>, <strong>maybe not</strong>, or <strong>don't know</strong></li>
+                    <li>I'll try to guess who you're thinking of!</li>
+                </ul>
+            </div>
         </div>
     </div>
 
     <script>
         const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-        const DEFAULT_MODEL = 'openai/gpt-3.5-turbo'; // Using a more reliable model
+        const MODEL = 'deepseek/deepseek-chat-v3.1:free';
         
         let conversationHistory = [
             {
@@ -150,13 +249,13 @@
             
             if (type === 'user') {
                 message.classList.add('user-message');
-                message.textContent = 'You: ' + content;
+                message.innerHTML = '<strong>You:</strong> ' + content;
             } else if (type === 'error') {
                 message.classList.add('error-message');
-                message.textContent = 'Error: ' + content;
+                message.innerHTML = '<strong>Error:</strong> ' + content;
             } else {
                 message.classList.add('ai-message');
-                message.textContent = 'Akinator: ' + content;
+                message.innerHTML = '<strong>Akinator:</strong> ' + content;
             }
             
             messagesDiv.appendChild(message);
@@ -172,6 +271,7 @@
             const validAnswers = ['yes', 'no', 'maybe', 'maybe not', 'don\'t know', "i don't know"];
             if (!validAnswers.includes(answer)) {
                 addMessage('Please answer with "yes", "no", "maybe", "maybe not", or "don\'t know"', 'error');
+                userInput.value = '';
                 return;
             }
             
@@ -196,10 +296,10 @@
                         'X-Title': 'Akinator Game'
                     },
                     body: JSON.stringify({
-                        model: DEFAULT_MODEL,
+                        model: MODEL,
                         messages: conversationHistory,
                         temperature: 0.7,
-                        max_tokens: 100
+                        max_tokens: 150
                     })
                 });
                 
@@ -231,7 +331,9 @@
                 if (error.message.includes('401')) {
                     addMessage('Check that your API key is correct and has sufficient credits', 'error');
                 } else if (error.message.includes('model')) {
-                    addMessage('The model might be unavailable. Try again later.', 'error');
+                    addMessage('The DeepSeek model might be unavailable. Try again later.', 'error');
+                } else if (error.message.includes('Failed to fetch')) {
+                    addMessage('Network error. Check your internet connection.', 'error');
                 }
             }
         }
@@ -240,7 +342,7 @@
             conversationHistory = [conversationHistory[0]];
             document.getElementById('messages').innerHTML = '';
             document.getElementById('user-input').value = '';
-            addMessage('Ready! Think of something, and I\'ll start asking questions.');
+            addMessage('Ready! Think of a character, and I\'ll try to guess it!');
             
             // Only send initial question if API key is provided
             if (getApiKey()) {
@@ -264,10 +366,10 @@
                         'X-Title': 'Akinator Game'
                     },
                     body: JSON.stringify({
-                        model: DEFAULT_MODEL,
+                        model: MODEL,
                         messages: conversationHistory,
                         temperature: 0.7,
-                        max_tokens: 100
+                        max_tokens: 150
                     })
                 });
                 
@@ -302,19 +404,22 @@
         });
         
         // Initialize the game
-        addMessage('Ready! Think of something, and I\'ll start asking questions.');
+        addMessage('Welcome to Akinator! Enter your API key and think of a character to begin.');
         
         // Check if there's a saved API key
         const savedApiKey = localStorage.getItem('openrouter_api_key');
         if (savedApiKey) {
             document.getElementById('api-key').value = savedApiKey;
-            sendInitialQuestion();
         }
         
         // Save API key when it changes
         document.getElementById('api-key').addEventListener('change', function() {
             if (this.value.trim()) {
                 localStorage.setItem('openrouter_api_key', this.value.trim());
+                // Start the game if it's the first time
+                if (conversationHistory.length === 1) {
+                    resetGame();
+                }
             }
         });
     </script>
