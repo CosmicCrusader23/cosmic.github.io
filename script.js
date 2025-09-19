@@ -1,9 +1,7 @@
 // script.js
-
-// Prompt user for API key on page load
-const API_KEY = prompt('Please enter your OpenRouter API key:') || 'sk-placeholder'; // Fallback if user cancels
+const API_KEY = prompt('Please enter your OpenRouter API key:') || 'sk-placeholder';
 const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const MODEL = 'openai/gpt-oss-120b:free'; // Updated to the new free model
+const MODEL = 'openai/gpt-oss-120b:free';
 
 let conversationHistory = [
     {
@@ -67,7 +65,7 @@ async function sendMessage() {
 }
 
 function resetGame() {
-    conversationHistory = [conversationHistory[0]]; // Keep system prompt
+    conversationHistory = [conversationHistory[0]];
     document.getElementById('messages').innerHTML = '';
     addMessage('Ready! Think of something, and I\'ll start asking questions.');
     sendInitialQuestion();
@@ -115,6 +113,5 @@ document.getElementById('user-input').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendMessage();
 });
 
-// Initialize
 addMessage('Ready! Think of something, and I\'ll start asking questions.');
 sendInitialQuestion();
