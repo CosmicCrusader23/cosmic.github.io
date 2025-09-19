@@ -3,18 +3,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Akinator-like Game</title>
-    <script src="script.js" defer></script>
+    <title>Akinator Game</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #4a4a4a;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            background-color: #fafafa;
+        }
+        .message {
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 80%;
+        }
+        .user-message {
+            background-color: #e3f2fd;
+            margin-left: auto;
+            margin-right: 0;
+            text-align: right;
+        }
+        .ai-message {
+            background-color: #f1f1f1;
+        }
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        #user-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #reset-btn {
+            background-color: #f44336;
+        }
+        #reset-btn:hover {
+            background-color: #d32f2f;
+        }
+        .api-key-container {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: #fff8e1;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
+        }
+        #api-key {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .instructions {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
 <body>
-    <h1>Akinator-like Game</h1>
-    <p>Think of a character, person, or object. The AI will ask questions to guess it.</p>
-    <p>Answers: "yes", "no", "maybe", "maybe not", "don't know".</p>
-    <div id="game-container">
+    <div class="container">
+        <h1>Akinator Game</h1>
+        
+        <div class="api-key-container">
+            <label for="api-key">OpenRouter API Key:</label>
+            <input type="password" id="api-key" placeholder="Enter your OpenRouter API key">
+            <p><small>Get your API key from <a href="https://openrouter.ai/" target="_blank">OpenRouter</a>. Your key is stored only in your browser.</small></p>
+        </div>
+        
         <div id="messages"></div>
-        <input type="text" id="user-input" placeholder="Enter your answer...">
-        <button id="send-btn">Send</button>
-        <button id="reset-btn">Reset Game</button>
+        
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Type your answer (yes/no/maybe/maybe not/don't know)...">
+            <button id="send-btn">Send</button>
+            <button id="reset-btn">Reset Game</button>
+        </div>
+        
+        <div class="instructions">
+            <p><strong>How to play:</strong> Think of a character, person, or object. I'll try to guess it by asking yes/no questions.</p>
+            <p><strong>Possible answers:</strong> yes, no, maybe, maybe not, don't know</p>
+        </div>
     </div>
+
+    <script>
+        const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+        const DEFAULT_MODEL = 'openai/gpt-3.5-turbo'; // Using a more reliable model
+        
+        let conversationHistory = [
+            {
+                role: 'system',
+                content: 'You are Akinator, the web genie. Your goal is to guess what character, person, or object the user is thinking of by asking one yes/no question at a time. The user can answer with "yes", "no", "maybe", "maybe not", or "don\'t know". Based on the answers, ask the next relevant question. If you are confident, make a guess by saying "I guess it is [your guess]". Keep responses short and to the point, just the question or guess.'
+            }
+        ];
+        
+        function getApiKey() {
+            return document.getElementById('api-key').value.trim();
+        }
+        
+        function addMessage(content, type = 'ai') {
+            const messagesDiv = document.getElementById('messages');
+            const message = document.createElement('div');
+            message.classList.add('message');
+            
+            if (type === 'user') {
+                message.classList.add('user-message');
+                message.textContent = 'You: ' + content;
+            } else if (type === 'error') {
+                message.classList.add('error-message');
+                message.textContent = 'Error: ' + content;
+            } else {
+                message.classList.add('ai-message');
+                message.textContent = 'Akinator: ' + content;
+            }
+            
+            messagesDiv.appendChild(message);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        async function sendMessage() {
+            const userInput = document.getElementById('user-input');
+            const answer = userInput.value.trim().toLowerCase();
+            if (!answer) return;
+            
+            // Validate answer
+            const validAnswers = ['yes', 'no', 'maybe', 'maybe not', 'don\'t know', "i don't know"];
+            if (!validAnswers.includes(answer)) {
+                addMessage('Please answer with "yes", "no", "maybe", "maybe not", or "don\'t know"', 'error');
+                return;
+            }
+            
+            addMessage(answer, 'user');
+            userInput.value = '';
+            
+            const apiKey = getApiKey();
+            if (!apiKey) {
+                addMessage('Please enter your OpenRouter API key to continue', 'error');
+                return;
+            }
+            
+            conversationHistory.push({ role: 'user', content: answer });
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json',
+                        'HTTP-Referer': window.location.href,
+                        'X-Title': 'Akinator Game'
+                    },
+                    body: JSON.stringify({
+                        model: DEFAULT_MODEL,
+                        messages: conversationHistory,
+                        temperature: 0.7,
+                        max_tokens: 100
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    let errorMessage = 'API request failed';
+                    if (data.error?.message) {
+                        errorMessage += ': ' + data.error.message;
+                    } else {
+                        errorMessage += ` with status ${response.status}`;
+                    }
+                    throw new Error(errorMessage);
+                }
+                
+                if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                    throw new Error('Invalid response format from API');
+                }
+                
+                const aiResponse = data.choices[0].message.content.trim();
+                addMessage(aiResponse);
+                
+                conversationHistory.push({ role: 'assistant', content: aiResponse });
+            } catch (error) {
+                console.error('API Error:', error);
+                addMessage(error.message, 'error');
+                
+                // Provide troubleshooting tips based on common errors
+                if (error.message.includes('401')) {
+                    addMessage('Check that your API key is correct and has sufficient credits', 'error');
+                } else if (error.message.includes('model')) {
+                    addMessage('The model might be unavailable. Try again later.', 'error');
+                }
+            }
+        }
+        
+        function resetGame() {
+            conversationHistory = [conversationHistory[0]];
+            document.getElementById('messages').innerHTML = '';
+            document.getElementById('user-input').value = '';
+            addMessage('Ready! Think of something, and I\'ll start asking questions.');
+            
+            // Only send initial question if API key is provided
+            if (getApiKey()) {
+                sendInitialQuestion();
+            }
+        }
+        
+        async function sendInitialQuestion() {
+            const apiKey = getApiKey();
+            if (!apiKey) {
+                return; // Don't proceed without API key
+            }
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json',
+                        'HTTP-Referer': window.location.href,
+                        'X-Title': 'Akinator Game'
+                    },
+                    body: JSON.stringify({
+                        model: DEFAULT_MODEL,
+                        messages: conversationHistory,
+                        temperature: 0.7,
+                        max_tokens: 100
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    let errorMessage = 'API request failed';
+                    if (data.error?.message) {
+                        errorMessage += ': ' + data.error.message;
+                    }
+                    throw new Error(errorMessage);
+                }
+                
+                if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                    throw new Error('Invalid response format from API');
+                }
+                
+                const aiResponse = data.choices[0].message.content.trim();
+                addMessage(aiResponse);
+                conversationHistory.push({ role: 'assistant', content: aiResponse });
+            } catch (error) {
+                console.error('Initial Question Error:', error);
+                addMessage(error.message, 'error');
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('send-btn').addEventListener('click', sendMessage);
+        document.getElementById('reset-btn').addEventListener('click', resetGame);
+        document.getElementById('user-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+        
+        // Initialize the game
+        addMessage('Ready! Think of something, and I\'ll start asking questions.');
+        
+        // Check if there's a saved API key
+        const savedApiKey = localStorage.getItem('openrouter_api_key');
+        if (savedApiKey) {
+            document.getElementById('api-key').value = savedApiKey;
+            sendInitialQuestion();
+        }
+        
+        // Save API key when it changes
+        document.getElementById('api-key').addEventListener('change', function() {
+            if (this.value.trim()) {
+                localStorage.setItem('openrouter_api_key', this.value.trim());
+            }
+        });
+    </script>
 </body>
 </html>
