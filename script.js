@@ -1,8 +1,8 @@
 // script.js
 
-const API_KEY = 'sk-1234abcd1234abcd1234abcd1234abcd1234abcd'; // Replace with your OpenAI API key (do NOT commit this to GitHub!)
-const API_URL = 'https://api.openai.com/v1/chat/completions';
-const MODEL = 'gpt-3.5-turbo'; // Or 'gpt-4o-mini' for a faster/cheaper option
+const API_KEY = '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'; // Replace with placeholder (e.g., 'sk-placeholder')—do NOT commit real key
+const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+const MODEL = 'deepseek/deepseek-chat-v3.1:free';
 
 let conversationHistory = [
     {
@@ -34,7 +34,9 @@ async function sendMessage() {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${API_KEY}`,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'HTTP-Referer': 'https://cosmiccrusader23.github.io', // Optional: Your site URL
+                'X-Title': 'Akinator Game' // Optional: App name
             },
             body: JSON.stringify({
                 model: MODEL,
@@ -66,13 +68,14 @@ function resetGame() {
 }
 
 async function sendInitialQuestion() {
-    // Start with the first question
     try {
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${API_KEY}`,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'HTTP-Referer': 'https://cosmiccrusader23.github.io',
+                'X-Title': 'Akinator Game'
             },
             body: JSON.stringify({
                 model: MODEL,
@@ -81,6 +84,10 @@ async function sendInitialQuestion() {
                 max_tokens: 100
             })
         });
+
+        if (!response.ok) {
+            throw new Error('API request failed: ' + response.statusText);
+        }
 
         const data = await response.json();
         const aiResponse = data.choices[0].message.content.trim();
